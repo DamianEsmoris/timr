@@ -1,0 +1,162 @@
+@font-face {
+  font-family: JetBrainsNerdFont;
+  src: url(assets/JetBrainsMonoNerdFont.ttf);
+}
+:root {
+  --bg-body: #252525;
+  --bg-card: #2b2b2b;
+  --bg-popup: #222222;
+  --main-color: #d1d1d1;
+  --title-color: #c1c1c1;
+	--nerd-font: "JetBrainsNerdFont";
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Afacad&display=swap");
+
+body {
+  background: var(--bg-body);
+  font-family: "Afacad", sans-serif;
+  color: var(--main-color);
+  overflow-x: hidden;
+}
+
+body > div {
+  max-width: 1200px;
+  margin: 45px auto 0 auto;
+  padding: 0 10px;
+}
+
+i {
+  color: dimgray;
+}
+
+*, *:focus{
+  outline: none;
+}
+
+button{
+  padding: 4px 5px;
+  font-size: 1em;
+  border: solid 1px;
+  cursor: pointer;
+  min-width: 60px;
+}
+
+.nerd-icon {
+	font-family: var(--nerd-font);
+	padding: 10px;
+	font-size: 1.2em;
+}
+
+.hidden {
+  display: none;
+}
+
+.card {
+  background: var(--bg-card);
+  padding: 15px 10px;
+  display: flex;
+  background: var(--bg-card);
+  border-radius: 5px;
+  position: relative;
+  margin: 2px 0;
+}
+
+.card span {
+  z-index: 2;
+  font-size: 1.15em;
+}
+
+.card span.sub {
+  font-size: 1.05em;
+  position: absolute;
+  color: dimgray;
+  z-index: 1;
+}
+
+.card span.dot {
+  display: inline-flex;
+  align-items: center;
+  width: 0.5em;
+  height: 0.5em;
+  aspect-ratio: 1;
+  border-radius: 100%;
+  margin: auto 5px;
+}
+
+.card span.tag {
+  opacity: 0;
+  transition: opacity 300ms linear;
+  position: absolute;
+  top: 0.5em;
+  right: 4.5em;
+  background: var(--bg-popup);
+  padding: 8px 20px;
+  font-size: 0.9em;
+  box-shadow: 1px 1px 4px black;
+}
+
+.card span.tag.visible {
+  opacity: 1;
+}
+
+.card > span:nth-child(2) {
+  text-align: center;
+  width: 100%;
+  position: absolute;
+}
+
+.card > section {
+  margin-left: auto;
+}
+
+.card > section > span:nth-child(1) {
+  text-shadow: 2px 2px 6px rgb(58, 58, 58);
+}
+
+.card > section > span:nth-child(2) {
+  right: 0.5em;
+  margin-top: 0.6em;
+}
+
+#bottomTaskContainer {
+	position: fixed;
+	bottom: 10px;
+	left: 0;
+	padding: 7px 2.25em 8px 14px;
+	font-size: 1.25em;
+	background: var(--bg-popup);
+	border-radius: 8px;
+  box-shadow: 1px 1px 4px black;
+	font-size: 1.2em;
+}
+
+#bottomTaskContainer > section {
+	display: flex;
+	align-items: center;
+}
+
+#bottomTaskContainer span.btn {
+	color: #bd1515;
+	transition: color 250ms;
+	position: absolute;
+	right: 5px;
+	top: calc(50% - .95em);
+	font-size: 1.7em;
+	cursor: pointer;
+	user-select: none;
+}
+
+#bottomTaskContainer span.btn:hover {
+	color: #972e2e;
+}
+
+#bottomTaskContainer span.sub {
+	display: block;
+	font-size: .65em;
+	color: gray;
+	font-style: oblique;
+	margin-top: 2px;
+	margin-left: 10px;
+	padding-bottom: 5px;
+}

@@ -1,0 +1,193 @@
+#cardsContainer {
+    display: flex;
+    margin: 45px auto auto auto;
+    overflow-x: hidden;
+}
+
+#cardsContainer > section{
+    position: relative;
+    padding: 30px 25px;
+    min-width: 180px;
+    min-height: 80px;
+    background: var(--bg-card);
+    margin: 15px;
+    font-size: 1.5em;
+    border-radius: 10px;
+
+}
+
+#cardsContainer > section > span:nth-child(2){
+    position: absolute;
+    bottom: 20px;
+    left: 25px;
+    font-size: .8em;
+    color: dimgray;
+}
+
+#cardsContainer > section > input[type="color"]{
+    background: none;
+    border: none;
+    width: 45px;
+    height: 45px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+#cardsContainer{
+    margin-top: 34vh;
+    width: 100%;
+}
+
+#cardsContainer *{
+    user-select: none;
+}
+
+
+.wraper {
+    transform: scaleY(0);
+    transition: 300ms transform linear;
+    transform-origin: top;
+}
+
+.wraper.active {
+    transform: scale(1);
+}
+
+#contextualMenu :is(li, span){
+    list-style: none;
+    width: 180px;
+    max-width: 25vw;
+    display: block;
+    border-bottom: 2px solid var(--bg-body);
+}
+
+#contextualMenu > span{
+    font-style: italic;
+    font-size: 1.2em;
+    color: dimgray;
+}
+
+#contextualMenuCont{
+    position: absolute;
+}
+
+.menu {
+    padding: 0;
+    background-color: brown;
+    border-radius: 10px;
+}
+
+#contextualMenu {
+    font-size: 1.1em;
+    background-color: var(--bg-card);   
+    width: fit-content; 
+    padding: 5px;
+}
+
+#contextualMenu :is(span, li) {
+    padding: 8px 10px;
+    cursor: pointer;
+    position: relative;
+}
+
+#contextualMenu li.has-childs::after{
+    content: ">";
+    position: absolute;
+    width: fit-content;
+    right: 10px;
+}
+
+#contextualMenu li:hover {
+    background: #464646;
+}
+
+#contextualMenu li:hover > .subelement, .subelement:hover{
+    display: block;
+}
+
+#contextualMenu .subelement{
+    display: none;
+    position: absolute;
+    top: 0;
+    right: -100%;
+    border-radius: 0 10px 10px 10px;
+}
+
+dialog{
+    background: var(--bg-card);
+    flex-direction: column;
+    color: var(--main-color);
+    border: none;
+    padding: 20px;
+    gap: 5px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 7px black;
+}
+
+dialog:modal {
+    display: flex;
+}
+
+dialog > span:nth-child(1) {
+    min-width: 400px;
+    font-size: 1.6em;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--title-color);
+}
+
+dialog p {
+    margin: 5px 5px 0 0;
+    max-width: 700px;
+    font-size: 1.1em;
+}
+
+dialog section {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 5px 0;
+}
+
+dialog section:first-child {
+    
+}
+
+#nameDialog #bottomText {
+    font-style: italic;
+    font-size: .8em;
+    position: absolute;
+    bottom: 30px;
+    display: inline-block;
+    max-width: 257px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    color: dimgray;
+}
+
+#nameDialog i#oldName {
+    color: red;
+    font-style: italic;
+}
+
+#nameDialog i#newName {
+    color: green;
+}
+
+#nameDialog > input {
+    margin: 10px 2px 8px 2px;
+    padding: 8px 10px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid dimgray;
+    color: var(--main-color);
+}
+
+@media (width <= 1024px) {
+    #cardsContainer{
+        margin-top: 10px;
+        flex-direction: column;
+    }
+}

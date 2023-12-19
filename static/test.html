@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Example</title>
+</head>
+<body>
+
+<script>
+// Replace "ws://127.0.0.1:8080/ws/" with the actual WebSocket endpoint
+const socket = new WebSocket("ws://192.168.1.40:8080/ws/");
+
+// Connection opened
+socket.addEventListener('open', (event) => {
+    console.log('WebSocket connection opened:', event);
+});
+
+// Listen for messages
+socket.addEventListener('message', (event) => {
+    const data = JSON.parse(event.data);
+    data.content = JSON.parse(data.content);
+    console.log(data);
+});
+
+// Connection closed
+socket.addEventListener('close', (event) => {
+    console.log('WebSocket connection closed:', event);
+});
+
+// Connection error
+socket.addEventListener('error', (event) => {
+    console.error('WebSocket error:', event);
+});
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+:root {
+  --bg-clock: radial-gradient(#252525, #1d1d21);
+  --bg-dialline: #535353;
+  --bg-thechosen-dialline: #252525;
+
+  --seconds-needle: #595959;
+  --minutes-needle: #838383;
+  --hours-needle: #bfbfbf;
+}
+
+#clockGraph{
+  position: absolute;
+}
+
+#clock {
+  position: relative;
+  background: var(--bg-clock);
+  border-radius: 100%;
+  max-width: 400px;
+  width: 80vw;
+  aspect-ratio: 1;
+
+  border: solid 3px #292929;
+  box-shadow: 1px 2px 13px black;
+  margin: auto;
+}
+
+#clock::after {
+  content: "";
+  background-color: #595959;
+  width: 12px;
+  aspect-ratio: 1;
+  display: block;
+  position: absolute;
+  left: calc(50% - 6px);
+  top: calc(50% - 6px);
+  border-radius: 100%;
+  z-index: 10;
+}
+
+#clock #dialLinesContainer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+#clock .dialline {
+  position: absolute;
+  z-index: 2;
+  width: 2px;
+  height: 15px;
+  background: var(--bg-dialline);
+  left: 50%;
+  margin-left: -1px;
+  transform-origin: 50% 150px;
+}
+
+#clock .dialline:nth-child(5n) {
+  background: var(--bg-thechosen-dialline);
+  width: 3px;
+  height: 18px;
+}
+
+#clock .needle {
+  height: 10px;
+  width: 80%;
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform-origin: left;
+  z-index: 10;
+  transition: transform 300ms linear;
+}
+
+
+#clock .needle.transition-disabled {
+  transition: none;
+}
+
+#clock .needle:nth-child(1) {
+  height: 3px;
+  width: 42%;
+  background: var(--seconds-needle);
+  border-radius: 3px;
+}
+
+#clock .needle:nth-child(2) {
+  height: 4px;
+  width: 33%;
+  background: var(--minutes-needle);
+}
+
+#clock .needle:nth-child(3) {
+  height: 4px;
+  width: 28%;
+  background: var(--hours-needle);
+}
+
+#clock > #clockGraph {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: -2px; 
+  left: -2px; 
+  padding: 2px;
+  z-index: -1;
+}
+
+#clock > #clockGraph > div{
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  padding: 10px;
+  width: 100%;
+  height: 100%;
+
+  border-radius: 50%;
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sch - Tasks</title>
+    <link rel="stylesheet" href="static/main.css">
+    <link rel="stylesheet" href="static/tasks.css">
+    <script defer src="static/scripts/tasks/main.js"></script>
+</head>
+<body>
+    <div id="cardsContainer"></div>
+
+    <section id="contextualMenuCont" class="wraper">
+        <ul id="contextualMenu" class="menu">
+            <span id="menuTaskName">task</span>
+            <li id="menuUpdateBtn">update</li>
+            <li class="has-childs">
+                edit...
+                <ul class="subelement menu">
+                    <li id="editSubmenuChangeName">change name</li>
+                    <li id="editSubmenuDelete">delete</li>
+                </ul>
+            </li>
+            <li id="menuStartBtn">start</li>
+        </ul>
+    </section>
+
+    <dialog id="nameDialog">
+        <span>Change task name</span>
+        <p>This action will not modify any of your records!</p>
+        <span id="bottomText">
+            <i id="oldName">task</i> --- <i id="newName">please type</i>
+        </span>
+        <input type="text" max="250" id="dialogNameInput">
+        <section>
+            <button id="nameDialogCancel">cancel</button>
+            <button id="nameDialogOk">ok</button>
+        </section>
+    </dialog>
+
+    <dialog id="deletionDialog">
+        <span>Delete task</span>
+        <p>This deletion will be handled logically, meaning that this task will not appear in the task view. However, all time registries will be retained for structural reasons</p>
+        <p id="deletionTaskName"></p>
+        <section>
+            <button id="deletionDialogCancel">no</button>
+            <button id="deletionDialogOk">yes</button>
+        </section>
+    </dialog>
+</body>
+</html>
