@@ -29,7 +29,7 @@ impl TaskModel {
         );
 
         match result {
-            Ok(name) => true,
+            Ok(_) => true,
             Err(_) => false,
         }
    }
@@ -89,7 +89,7 @@ impl TaskModel {
         );
 
         match result {
-            Ok(name) => true,
+            Ok(_) => true,
             Err(_) => false,
         }
    }

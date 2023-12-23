@@ -66,8 +66,10 @@ const updateBottomCard = (t) => {
 			method: "post",
 			body: JSON.stringify({name: t.task.name})
 		})
-		.then(res =>  
-			res.ok ? fetch("/stop_task_notify") : null
+		.then(res => {
+			if (!res.ok) return false;
+			hideBottomCard();
+			fetch("/stop_task_notify");
 		);
 
 	}

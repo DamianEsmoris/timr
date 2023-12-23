@@ -16,6 +16,36 @@ pub struct Query<'a> {
     args: &'a [String],
 }
 
+pub struct Commands<'a> {
+    all: [&'a str; 10],
+    pub arr: [[&'a str; 4]; 6],
+}
+
+impl<'a> Commands<'a> {
+    pub fn new() -> Commands<'a>{
+        let all = [
+            "",
+            "create", "start", "stop", "show",
+            "task 'name'", "server", "tasks", "status", "graph",
+        ];
+
+        let arr = [
+            [ all[1], all[2], all[3], all[4] ],
+            [ all[5], all[5], all[5], all[0] ],
+            [ all[0], all[0], all[6], all[0] ],
+            [ all[0], all[0], all[0], all[7] ],
+            [ all[0], all[0], all[0], all[8] ],
+            [ all[0], all[0], all[0], all[9] ]
+        ];
+
+        Commands {
+            all: all,
+            arr
+        }
+
+    }
+}
+
 impl<'a> Query<'a> {
     pub fn new(args: &'a Vec<String>) -> Query<'a> {
         let filepath = &args[0];
@@ -29,7 +59,7 @@ impl<'a> Query<'a> {
 
     pub fn process_args(&self) {
         if self.args.len() == 0 {
-            cprintln!("⚠️ <yellow>No arguments provided!</>");
+            cprintln!("⚠️  <yellow>No arguments provided!</>");
             help();
         }
         println!("{}", self.filepath);
@@ -82,12 +112,23 @@ impl ArgsHandeler {
     }
 
     fn command_show(q: &Query, command_n: usize) {
-        let command: &str = &q.args[command_n];
+        let command: &str;
+        if q.args.len() < 2 {
+            command = "";
+        } else {
+            command = &q.args[command_n];
+        }
+
         let _ = match command {
             "tasks" => {
                 let tasks = TaskController::get_tasks();
-                for t in &tasks {
-                    println!("{:?}", t);
+                match tasks.len() > 0 {
+                    false => println!("There are no tasks loaded..."),
+                    true => {
+                        for t in &tasks {
+                            println!("{:?}", t);
+                        }
+                    }
                 }
             }
             "graph" => {
@@ -176,12 +217,27 @@ impl ArgsHandeler {
     }
 
     fn command_not_found(q: &Query, command_n: usize) {
-        cprintln!(
-            "{}<red><u>\"{}\"</>: command not found!</red>",
-            q.format_args(0, command_n),
-            q.args[command_n]
-        );
-        help();
+        if command_n < q.args.len() {
+            cprintln!(
+                "{}<red><u>\"{}\"</>: command not found!</red>",
+                q.format_args(0, command_n),
+                q.args[command_n]
+            );
+        }
+        println!();
+        let basic_command = &q.args[0];
+        let c = Commands::new();
+        let index = c.arr[0].iter().position(|&r| r.eq(basic_command)).unwrap();
+
+        for ii in 1..c.arr.len() {
+            if "".eq(c.arr[ii][index]) {
+                continue;
+            }
+            println!("    - {}", c.arr[ii][index]);
+        }
+
+
+        process::exit(1);
     }
 }
 
@@ -199,6 +255,21 @@ fn notify(action: &str) {
 }
 
 fn help() {
-    cprintln!("<yellow>belive me, this is the help</>");
+    let c = Commands::new();
+    println!("Basic commands: \n");
+    let basic_commands = c.arr.len();
+    for i in 0..basic_commands {
+        println!("  {}", c.arr[0][i]);
+
+        for ii in 1..c.arr.len() {
+            if "".eq(c.arr[ii][i]) {
+                continue;
+            }
+            println!("    - {}", c.arr[ii][i]);
+        }
+
+        println!();
+    }
+    
     process::exit(1);
 }
