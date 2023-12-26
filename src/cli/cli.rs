@@ -25,7 +25,7 @@ impl<'a> Commands<'a> {
     pub fn new() -> Commands<'a>{
         let all = [
             "",
-            "create", "start", "stop", "show",
+            "add", "start", "stop", "show",
             "task 'name'", "server", "tasks", "status", "graph",
         ];
 
@@ -65,7 +65,7 @@ impl<'a> Query<'a> {
         println!("{}", self.filepath);
         let command: &str = &self.args[0];
         match command {
-            "create" => ArgsHandeler::command_create(&self, 1),
+            "add" => ArgsHandeler::command_add(&self, 1),
             "show" => ArgsHandeler::command_show(&self, 1),
             "start" => ArgsHandeler::command_start(&self, 1),
             "stop" => ArgsHandeler::command_stop(&self, 1),
@@ -86,7 +86,7 @@ impl<'a> Query<'a> {
 
 pub struct ArgsHandeler;
 impl ArgsHandeler {
-    fn command_create(q: &Query, command_n: usize) {
+    fn command_add(q: &Query, command_n: usize) {
         let command: &str = &q.args[command_n];
         let _ = match command {
             "task" => {
@@ -154,6 +154,9 @@ impl ArgsHandeler {
                             println!("{}", t.task.name.truecolor(rgb_color.0, rgb_color.1, rgb_color.2));
                             println!("  + started at {}", t.start_time);
                             println!("  + {} mins", t.duration);
+                            if t.desc.len() > 1 { 
+                                println!("\n   '{}'", t.desc);
+                            }
                             println!("");
                         }
                     },
@@ -179,6 +182,11 @@ impl ArgsHandeler {
                         }
                     }
                     Ok(_) => {
+                        if command_n+2 < q.args.len() {
+                            let desc: &str = &q.args[command_n+2];
+                            TaskController::add_task_description(&task_name, desc, true); 
+                        }
+                        
                         cprintln!("✔️ <green>The task </>'{}'<green>, has started successfully!</>", task_name);
                         notify("start_task_notify");
                     }
@@ -207,6 +215,10 @@ impl ArgsHandeler {
                         }
                     }
                     Ok(_) => {
+                        if command_n+2 < q.args.len() {
+                            let desc: &str = &q.args[command_n+2];
+                            TaskController::add_task_description(&task_name, desc, false); 
+                        }
                         cprintln!("🛑 The task '{}', has stoped...", task_name);
                         notify("stop_task_notify");
                     }

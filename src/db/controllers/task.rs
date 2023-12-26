@@ -48,6 +48,11 @@ impl TaskController {
         Ok(())
     }
 
+    pub fn add_task_description(task_name: &str, desc: &str, running: bool) -> Result<(), TaskError> {
+        let _ = TaskModel::add_task_description(&task_name, desc, running);
+        Ok(())
+    }
+
     pub fn get_date_tasks(date: String) -> Vec<TaskInstance> {
         TaskModel::get_date_tasks(&date).unwrap()
     }

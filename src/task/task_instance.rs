@@ -18,6 +18,7 @@ pub struct TaskInstance
   pub status: TaskStatus,
   pub start_time: String,
   pub end_time: String,
+  pub desc: String,
 }
 
 impl TaskInstance
