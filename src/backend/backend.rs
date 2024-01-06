@@ -1,18 +1,23 @@
 use actix_web::{web, App, HttpServer};
 use actix_cors::Cors;
 use actix_files as fs;
-
 use actix::Actor;
+use std::env;
 
 mod handelers;
 mod websocket;
 
+use crate::{Config, Query};
 use handelers::*;
 use websocket::{ws_route, start_task_handler, end_task_handeler};
 use crate::backend::websocket::WebSocketServer;
 
 #[actix_web::main]
 pub async fn serve_server() -> std::io::Result<()> {
+    let args: Vec<String> = env::args().collect();
+    let query: Query = Query::new(&args);
+    let c: Config = Config::new(&query, false);
+    
     // Create shared state with the server address
     let server_addr = WebSocketServer::new().start();
     let app_state = AppState { server_addr: server_addr.clone() };
@@ -34,7 +39,7 @@ pub async fn serve_server() -> std::io::Result<()> {
             .service(web::resource("/start_task_notify").to(start_task_handler))
             .service(web::resource("/stop_task_notify").to(end_task_handeler))
     })
-    .bind(("192.168.1.40", 8080))?
+    .bind((c.server_ip, c.server_port))?
     .run()
     .await
 }

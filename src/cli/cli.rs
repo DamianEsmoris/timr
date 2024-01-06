@@ -3,8 +3,9 @@ use crate::hex_to_rgb;
 use color_print::cprintln;
 use std::process;
 use speedate::Date;
+use std::env;
 
-
+use crate::Config;
 use crate::backend::serve_server;
 use crate::task::task::Task;
 use crate::task::task_instance::draw_chart;
@@ -184,7 +185,7 @@ impl ArgsHandeler {
                     Ok(_) => {
                         if command_n+2 < q.args.len() {
                             let desc: &str = &q.args[command_n+2];
-                            TaskController::add_task_description(&task_name, desc, true); 
+                            let _ = TaskController::add_task_description(&task_name, desc, true); 
                         }
                         
                         cprintln!("✔️ <green>The task </>'{}'<green>, has started successfully!</>", task_name);
@@ -217,7 +218,7 @@ impl ArgsHandeler {
                     Ok(_) => {
                         if command_n+2 < q.args.len() {
                             let desc: &str = &q.args[command_n+2];
-                            TaskController::add_task_description(&task_name, desc, false); 
+                            let _ = TaskController::add_task_description(&task_name, desc, false); 
                         }
                         cprintln!("🛑 The task '{}', has stoped...", task_name);
                         notify("stop_task_notify");
@@ -254,7 +255,10 @@ impl ArgsHandeler {
 }
 
 fn notify(action: &str) {
-    let url = format!("http://192.168.1.40:8080/{}", action);
+    let args: Vec<String> = env::args().collect();
+    let query: Query = Query::new(&args);
+    let c: Config = Config::new(&query, false);
+    let url = format!("http://{}:{}/{}", c.server_ip, c.server_port, action);
 
     match reqwest::blocking::Client::new().post(url).send() {
         Ok(response) => {
@@ -269,7 +273,7 @@ fn notify(action: &str) {
 fn help() {
     let c = Commands::new();
     println!("Basic commands: \n");
-    let basic_commands = c.arr.len();
+    let basic_commands = c.arr[0].len();
     for i in 0..basic_commands {
         println!("  {}", c.arr[0][i]);
 
