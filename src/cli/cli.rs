@@ -3,7 +3,8 @@ use crate::hex_to_rgb;
 use color_print::cprintln;
 use std::process;
 use speedate::Date;
-use std::env;
+use std::{env, io::{stdout, Write}};
+use terminal_menu::{menu, label, button, run, mut_menu};
 
 use crate::Config;
 use crate::backend::serve_server;
@@ -18,25 +19,26 @@ pub struct Query<'a> {
 }
 
 pub struct Commands<'a> {
-    all: [&'a str; 10],
-    pub arr: [[&'a str; 4]; 6],
+    all: [&'a str; 12],
+    pub arr: [[&'a str; 5]; 7],
 }
 
 impl<'a> Commands<'a> {
     pub fn new() -> Commands<'a>{
         let all = [
             "",
-            "add", "start", "stop", "show",
-            "task 'name'", "server", "tasks", "status", "graph",
+            "add", "start", "stop", "show", "edit",
+            "task 'name'", "server", "tasks ?date", "graph ?date", "list ?date", "status",
         ];
 
         let arr = [
-            [ all[1], all[2], all[3], all[4] ],
-            [ all[5], all[5], all[5], all[0] ],
-            [ all[0], all[0], all[6], all[0] ],
-            [ all[0], all[0], all[0], all[7] ],
-            [ all[0], all[0], all[0], all[8] ],
-            [ all[0], all[0], all[0], all[9] ]
+            [ all[1], all[2], all[3], all[4], all[5] ],
+            [ all[6], all[6], all[6], all[0], all[0] ],
+            [ all[0], all[7], all[0], all[0], all[0] ],
+            [ all[0], all[0], all[0], all[8], all[8] ],
+            [ all[0], all[0], all[0], all[9], all[0] ],
+            [ all[0], all[0], all[0], all[10], all[0] ],
+            [ all[0], all[0], all[0], all[11], all[0] ]
         ];
 
         Commands {
@@ -70,6 +72,7 @@ impl<'a> Query<'a> {
             "show" => ArgsHandeler::command_show(&self, 1),
             "start" => ArgsHandeler::command_start(&self, 1),
             "stop" => ArgsHandeler::command_stop(&self, 1),
+            "edit" => ArgsHandeler::command_edit(&self, 1),
             _ => ArgsHandeler::command_not_found(self, 0),
         };
     }
@@ -145,6 +148,31 @@ impl ArgsHandeler {
                     println!("There are no tasks loaded for this day...")
                 }
             }
+            "list" => {
+                let date: String;
+                if &q.args.len() > &(command_n+1) {
+                    date = q.args[command_n+1].to_string();
+                } else {
+                    date = Date::today(0).unwrap().to_string();
+                }
+                let tasks = TaskController::get_date_tasks(date);
+                match tasks.len() > 0 {
+                    false => println!("There is no tasks loaded today!"),
+                    true => {
+                        for t in &tasks {
+                            let rgb_color = hex_to_rgb(&t.task.color);
+                            println!("{}", t.task.name.truecolor(rgb_color.0, rgb_color.1, rgb_color.2));
+                            println!("  + started at {}", t.start_time);
+                            println!("  + {} mins", t.duration);
+                            if t.desc.len() > 1 { 
+                                println!("\n   '{}'", t.desc);
+                            }
+                            println!("");
+                        }
+                    },
+                };
+            }
+
             "status" => {
                 let tasks = TaskController::get_running_tasks();
                 match tasks.len() > 0 {
@@ -229,6 +257,37 @@ impl ArgsHandeler {
         };
     }
 
+    fn command_edit(q: &Query, command_n: usize) {
+        let command: &str;
+        if q.args.len() < 2 {
+            command = "";
+        } else {
+            command = &q.args[command_n];
+        }
+
+        let _ = match command {
+            "tasks" => {
+                let date: String;
+                if &q.args.len() > &(command_n+1) {
+                    date = q.args[command_n+1].to_string();
+                } else {
+                    date = Date::today(0).unwrap().to_string();
+                }
+
+                let mut tasks = TaskController::get_date_tasks(date);
+                let menu = menu(
+                    tasks.iter().map(|t| button(t.task.name.to_string())).rev().collect()
+                );
+
+                run(&menu);
+                let selected: usize = mut_menu(&menu).selected_item_index();
+                    
+                tasks[selected].update_instance();
+            }
+            _ => ArgsHandeler::command_not_found(q, command_n),
+        };
+    }
+
     fn command_not_found(q: &Query, command_n: usize) {
         if command_n < q.args.len() {
             cprintln!(
@@ -288,4 +347,17 @@ fn help() {
     }
     
     process::exit(1);
+}
+
+pub fn user_input_w_def(text: &str, def: &str) -> String{
+    let mut line = String::new();
+    print!("{} ({}): ", text, def);
+    let _ = stdout().flush();
+    let buff = std::io::stdin().read_line(&mut line).unwrap();
+    line.pop();
+
+    match buff == 1 {
+        true => def.to_string(),
+        false => line,
+    }
 }

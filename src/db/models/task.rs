@@ -78,6 +78,36 @@ impl TaskModel {
         Ok(())
     }
 
+    pub fn update_task_instance(task_name: &str, start_time: &str, end_time: &str, edited_task: &TaskInstance) -> Result<()> {
+        
+        let db = Db::new().unwrap();
+        db.conn
+            .execute(
+                "UPDATE history SET
+                    name=?, start_date=datetime(?),
+                    desc=(CASE WHEN ? = 'Null' THEN '' ELSE ? END),
+                    end_date=(CASE WHEN ? = 'Null' THEN NULL ELSE datetime(?) END)
+
+                WHERE name=? AND start_date=? AND
+                    (CASE WHEN ? = 'Null' THEN end_date IS NULL ELSE end_date = ? END)",
+                params_from_iter(&[
+                    &edited_task.task.name.to_string(),
+                    &edited_task.start_time,
+                    &edited_task.desc,
+                    &edited_task.desc,
+                    &edited_task.end_time,
+                    &edited_task.end_time,
+                    task_name,
+                    &start_time,
+                    &end_time,
+                    &edited_task.end_time,
+                ]
+            ),
+        ).expect(&format!("Error, cannot update the task; {} -> {}", &task_name, &edited_task.task.name.to_string()));
+
+        Ok(())
+    }
+
     pub fn is_task_runing(task_name: &str) -> bool {
         let db = Db::new().unwrap();
 
@@ -118,9 +148,9 @@ impl TaskModel {
         let mut statement = db
             .conn
             .prepare(
-                "SELECT s.name, color, strftime('%H:%M', start_date) AS started,
+                "SELECT s.name, color, start_date AS started,
                 CASE WHEN end_date IS NULL THEN 'Null'
-                ELSE strftime('%H:%M', end_date)
+                ELSE end_date
                 END AS ended,
                 
                 CASE WHEN end_date IS NULL THEN

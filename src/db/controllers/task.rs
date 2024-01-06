@@ -48,6 +48,15 @@ impl TaskController {
         Ok(())
     }
 
+    pub fn update_task_instance(task: &TaskInstance, edited_task: &TaskInstance) -> Result<(), TaskError>{
+        if !TaskModel::task_exits(&edited_task.task.name) {
+            return Err(TaskError{code: -1, desc: "The task doesn't exists".to_string()});
+        }
+
+        let _ = TaskModel::update_task_instance(&task.task.name, &task.start_time, &task.end_time, edited_task); 
+        Ok(())
+    }
+
     pub fn add_task_description(task_name: &str, desc: &str, running: bool) -> Result<(), TaskError> {
         let _ = TaskModel::add_task_description(&task_name, desc, running);
         Ok(())
